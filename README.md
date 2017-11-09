@@ -56,13 +56,16 @@ Then download pretrained model :
 ./download_pretrained_model.sh
 ```
 
-Then install prince xml
+Then install GraphicsMagick :
+```
+brew update && brew install graphicsmagick
+```
 
-Then 
+
+Then  :
 
 ```
 mkdir data
-mkdir temp
 npm install
 ```
 
