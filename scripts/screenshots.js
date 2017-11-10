@@ -50,21 +50,33 @@ function populateDuration(parameters) {
  * @param parameters.input - input file path
  * @param parameters.output - output folder path
  */
-function takeScreenshots (parameters) {
+function takeScreenshots (parameters, subsIn) {
   return new Promise((resolve, reject) => {
     const timemarks = [];
-    if (parameters.duration && parameters.timespan) {
+    if (parameters.alignOnSubtitles && subsIn) {
+      console.log('screenshots are defined using subtitles for defining timestamps');
+      const subs = Object.keys(subsIn).map(key => subsIn[key]);
+      subs.forEach(sub => {
+        const timestamp = sub.startTime;
+        timemarks.push(timestamp/1000);
+      })
+    }
+    else if (parameters.duration && parameters.timespan) {
+      console.log('screenshots are taken each %s seconds', parameters.timespan);
       var count = 0;
       while (count <= parameters.duration - parameters.timespan) {
         timemarks.push(count);
         count += parameters.timespan;
       }
+    } else {
+      console.log('no duration or timespan in parameters, cannot define timestamps for screenshots');
+      return reject('not enough parameters');
     }
     const total = timemarks.length;
     var count = 0;
 
-    console.log('Will output ', total, ' thumbnails');
     console.log('output folder is ', parameters.output);
+    console.log('there are %s screenshots', total);
 
     const packets = [];
     var packetCount = 0;
@@ -75,28 +87,28 @@ function takeScreenshots (parameters) {
         );
       packetCount += libLimit;
     }
-    console.log('splitting screenshots into %s packets of %s images', packets.length, libLimit);
+    console.log('splitting screenshots into %s packets', packets.length);
     async.mapSeries(packets, function(packet, packetCb) {
-      console.log('starting taking screenshots with new packet');
+      console.log('starting taking screenshots for new packet');
       var cb = false;
       var command = ffmpeg(parameters.input)
           .screenshots({
             timestamps: packet,
             folder: parameters.output,
-            filename : parameters.filesname
+            filename : parameters.filesname || 'tn_%s.png'
           })
-        .on('error', function(err) {
+        .on('error', (err) => {
           console.log('error: ', err);
           packetCb(err);
         })
-        .on('filenames', function(filenames) {
+        .on('filenames', (filenames) => {
           console.log('Will generate ' + filenames.join(', '))
         })
-        .on('end', function() {
+        .on('end', () => {
           count++;
           console.log('Screenshots taken for current packet (%s/%s)', count, packets.length);
 
-          setTimeout(function(){
+          setTimeout(() => {
             cb = true;
             return packetCb(null);
           }, 1000);
@@ -106,7 +118,7 @@ function takeScreenshots (parameters) {
       if (packetErrors) {
         return reject(packetErrors);
       } else {
-        return resolve(Object.assign(parameters, {nb_imgs: timemarks.length}), timemarks);
+        return resolve(timemarks);
       }
     });
   });

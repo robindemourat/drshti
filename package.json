@@ -1,0 +1,21 @@
+{
+  "name": "ohm",
+  "version": "1.0.0",
+  "description": "makes a sequence of images out of a static video",
+  "main": "prepare.js",
+  "scripts": {},
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^2.0.1",
+    "d3-array": "^1.2.1",
+    "d3-scale": "^1.0.6",
+    "fluent-ffmpeg": "^2.1.0",
+    "fs-extra": "^4.0.2",
+    "gm": "^1.23.0",
+    "minimist": "^1.2.0",
+    "moment": "^2.15.1",
+    "phantom-html2pdf": "^3.0.0",
+    "srt": "0.0.3"
+  }
+}
