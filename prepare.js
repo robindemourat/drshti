@@ -14,7 +14,7 @@ const captionsDir = temp + '/captions/';
 const inputDir = path.resolve(__dirname + '/data/');
 const outputDir = path.resolve(__dirname + '/output/');
 const inputSubtitles = path.resolve(__dirname + '/data/subtitles.srt');
-const inputVideo = path.resolve(__dirname + '/data/video.mp4');
+const inputVideo = path.resolve(__dirname + '/data/video.avi');
 
 const params = {
   input: inputVideo,
@@ -37,6 +37,7 @@ fs.remove(temp)
   // convert subtitles to json
   .then(() => fs.readFile(inputSubtitles, 'utf8'))
   .then(str => {
+    console.log('str', str);
     subs = srt(str);
     return fs.writeFile(temp + '/subs.json', JSON.stringify(subs))
   })

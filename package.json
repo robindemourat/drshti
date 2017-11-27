@@ -1,9 +1,15 @@
 {
-  "name": "ohm",
+  "name": "drshti",
+  "author": "robin de mourat",
+  "repository": "https://github.com/robindemourat/drshti",
   "version": "1.0.0",
   "description": "makes a sequence of images out of a static video",
   "main": "prepare.js",
-  "scripts": {},
+  "scripts": {
+    "prepare": "node prepare",
+    "make-html": "node makeHtml",
+    "proceed": "npm run prepare; npm run make-html"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
